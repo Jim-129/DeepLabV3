@@ -61,3 +61,15 @@
   ![预测结果](pre.png)
 
 这些结果证明了模型在实际应用中的有效性，并为后续业务提供了可靠的支持。
+
+```
+DeepLabV3/  
+├── images/                # 原始图像数据  
+├── json/                  # LabelMe 导出的 JSON 标注文件  
+├── masks/                 # 生成的 mask 掩码图像  
+├── templates/               
+├── inference.py           # 模型推理脚本  
+├── mask.py                # JSON 转 mask 的数据处理脚本  
+├── train_configs.json     # 训练配置文件（包含超参数设定）  
+├── V3.py                  # 模型训练主脚本  
+```
