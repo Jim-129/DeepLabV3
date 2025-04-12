@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>语义分割演示</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .upload-form {
+            border: 2px dashed #aaa;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .upload-form:hover {
+            border-color: #666;
+        }
+        #preview {
+            max-width: 100%;
+            margin-top: 10px;
+            display: none;
+        }
+        #results {
+            display: none;
+            margin-top: 20px;
+        }
+        .result-image {
+            max-width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        .loading {
+            text-align: center;
+            display: none;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>语义分割演示</h1>
+    
+    <div class="upload-form">
+        <h2>上传图片</h2>
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" accept="image/*" onchange="previewImage(this)">
+            <br>
+            <img id="preview" src="#" alt="预览图">
+            <br>
+            <button type="button" onclick="processImage()">开始分割</button>
+        </form>
+    </div>
+    
+    <div class="loading" id="loading">
+        <p>正在处理图像，请稍候...</p>
+        <img src="https://i.gifer.com/ZKZg.gif" alt="加载中" width="50">
+    </div>
+    
+    <div id="results">
+        <h2>分割结果</h2>
+        <div>
+            <h3>原始图像</h3>
+            <img id="original" class="result-image" src="" alt="原始图像">
+        </div>
+        <div>
+            <h3>分割掩码</h3>
+            <img id="pred_mask" class="result-image" src="" alt="分割掩码">
+        </div>
+        <div>
+            <h3>叠加效果</h3>
+            <img id="overlay" class="result-image" src="" alt="叠加效果">
+        </div>
+        <div>
+            <h3>组合图像（包含图例）</h3>
+            <img id="combined" class="result-image" src="" alt="组合图像">
+        </div>
+    </div>
+    
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    document.getElementById('preview').style.display = 'block';
+                    document.getElementById('preview').src = e.target.result;
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function processImage() {
+            var fileInput = document.getElementById('file');
+            if (!fileInput.files.length) {
+                alert('请先选择图片');
+                return;
+            }
+            
+            var formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            // 显示加载中
+            document.getElementById('loading').style.display = 'block';
+            
+            fetch('/process_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 隐藏加载中
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // 更新结果图像
+                    document.getElementById('original').src = data.result_urls.original;
+                    document.getElementById('pred_mask').src = data.result_urls.pred_mask;
+                    document.getElementById('overlay').src = data.result_urls.overlay;
+                    document.getElementById('combined').src = data.result_urls.combined;
+                    
+                    // 显示结果
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    alert('处理失败: ' + data.error);
+                    document.getElementById('loading').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                alert('发生错误: ' + error);
+                document.getElementById('loading').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

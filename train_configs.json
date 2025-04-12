@@ -1,0 +1,15 @@
+{
+  "use_cross_validation": true,
+  "num_folds": 5,
+  "configs": [
+    {
+      "name": "3-31",
+      "num_epochs": 10,
+      "batch_size": 4,
+      "lr": 0.0003,
+      "weight_decay": 0.01,
+      "patience": 10,
+      "use_importance_factors": false
+    }
+  ]
+}

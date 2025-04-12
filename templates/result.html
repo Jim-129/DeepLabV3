@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>语义分割结果</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .result-image {
+            max-width: none;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        .back-link {
+            display: block;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>语义分割结果</h1>
+    
+    <div>
+        <h2>原始图像</h2>
+        <img class="result-image" src="{{ url_for('result_file', timestamp=timestamp, filename=images.original) }}" alt="原始图像">
+    </div>
+    
+    <div>
+        <h2>分割掩码</h2>
+        <img class="result-image" src="{{ url_for('result_file', timestamp=timestamp, filename=images.pred_mask) }}" alt="分割掩码">
+    </div>
+    
+    <div>
+        <h2>叠加效果</h2>
+        <img class="result-image" src="{{ url_for('result_file', timestamp=timestamp, filename=images.overlay) }}" alt="叠加效果">
+    </div>
+    
+    <div>
+        <h2>组合图像（包含图例）</h2>
+        <img class="result-image" src="{{ url_for('result_file', timestamp=timestamp, filename=images.combined) }}" alt="组合图像">
+    </div>
+    
+    <a href="/" class="back-link">返回上传页面</a>
+</body>
+</html>
